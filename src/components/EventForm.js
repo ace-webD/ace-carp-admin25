@@ -16,8 +16,8 @@ function EventForm() {
   const [image, setImage] = useState(null);
   const [selected, setSelected] = useState("");
   const [status, setStatus] = useState("");
-
-  const options = ["Design", "Photography", "Dance"];
+  const[form_link, setFormLink]= useState("");
+  const options = ["Design", "Photography", "Dance","Music","Flagship","Tamil lits","Telugu lits","English lits","Hind lits","Drama","Arts","Fun",];
 
   const isValidTimeRange = (start, end) => {
     if (!start || !end) return true;
@@ -56,6 +56,7 @@ function EventForm() {
         venue,
         image,
         event_type: selected,
+        form_link,
       });
       setStatus("Event uploaded successfully! URL: " + publicUrl);
       alert("Event added!");
@@ -83,7 +84,7 @@ function EventForm() {
           />
           <input type="date" value={event_date} min={new Date().toISOString().split("T")[0]} onChange={(e) => setDate(e.target.value)} />
           
-          <div style={{ display: "flex", gap: "12px" }}>
+          <div style={{ display: "flex", gap: "12px", flexDirection:"column" }}>
             <label htmlFor="start_time">From</label>
             <input id="start_time" type="time" value={start_time} onChange={(e) => setStartTime(e.target.value)} />
             <label htmlFor="end_time">To</label>
@@ -96,8 +97,9 @@ function EventForm() {
             {options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
           </select>
           <p>Selected: <strong>{selected || "none"}</strong></p>
-          
+          <input type="text" placeholder="GFormLink" value={form_link} onChange={(e) => setFormLink(e.target.value)} />
           <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+
           <button type="submit">Submit Event</button>
           <p>{status}</p>
           <p>

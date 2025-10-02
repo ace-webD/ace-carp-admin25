@@ -9,7 +9,8 @@ export async function uploadEvent({
   end_time,
   venue,
   image,
-  event_type
+  event_type,
+  form_link
 }) {
   if (!image) throw new Error("No image provided");
 
@@ -38,6 +39,7 @@ export async function uploadEvent({
         image_url: publicUrl,
         event_type,
         event_conductedby,
+        form_link,
       },
     ]);
 
