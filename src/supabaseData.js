@@ -2,48 +2,50 @@ import { supabase } from "./supabase";
 
 export async function uploadEvent({
   event_name,
-  event_conductedby,
-  description,
-  event_date,
   start_time,
-  end_time,
   venue,
   image,
+  form_link,
   event_type,
-  form_link
 }) {
   if (!image) throw new Error("No image provided");
 
   const fileName = `${Date.now()}_${image.name}`;
-  const bucketName = "event-images";
+  const bucketName = "event-posters";
 
+  // Upload image
   const { error: uploadError } = await supabase.storage
     .from(bucketName)
     .upload(fileName, image);
 
-  if (uploadError) throw new Error("Image upload failed: " + uploadError.message);
+  if (uploadError) {
+    throw new Error("Image upload failed: " + uploadError.message);
+  }
 
-  const { data } = supabase.storage.from(bucketName).getPublicUrl(fileName);
+  // Get public URL
+  const { data } = supabase.storage
+    .from(bucketName)
+    .getPublicUrl(fileName);
+
   const publicUrl = data.publicUrl;
 
+  // Insert event
   const { error: insertError } = await supabase
-    .from("event_details")
+    .from("Events")
     .insert([
       {
-        event_name,
-        description,
-        event_date,
-        start_time,
-        end_time,
-        venue,
-        image_url: publicUrl,
-        event_type,
-        event_conductedby,
-        form_link,
+        Name: event_name,
+        Venue: venue,
+        Time: start_time,
+        img_url: publicUrl,
+        gform_link: form_link,
+        category: event_type,
       },
     ]);
 
-  if (insertError) throw new Error("Insert failed: " + insertError.message);
+  if (insertError) {
+    throw new Error("Insert failed: " + insertError.message);
+  }
 
   return publicUrl;
 }
